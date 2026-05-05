@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Category": {
+      "title": "Menu Category",
+      "description": "Categories for menu items (e.g., Pizza, Pasta, Drinks)",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "order": { "type": "number" },
+        "slug": { "type": "string" }
+      },
+      "required": ["name", "order", "slug"]
+    },
+    "MenuItem": {
+      "title": "Menu Item",
+      "description": "Individual food or drink items",
+      "type": "object",
+      "properties": {
+        "categoryId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "isVegetarian": { "type": "boolean" },
+        "isVegan": { "type": "boolean" },
+        "isGlutenFree": { "type": "boolean" },
+        "isSpicy": { "type": "boolean" },
+        "popular": { "type": "boolean" }
+      },
+      "required": ["categoryId", "name", "price"]
+    },
+    "Reservation": {
+      "title": "Table Reservation",
+      "description": "Customer table bookings",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "time": { "type": "string" },
+        "guests": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "cancelled"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "email", "date", "time", "guests", "status"]
+    },
+    "Order": {
+      "title": "Online Order",
+      "description": "Customer food orders",
+      "type": "object",
+      "properties": {
+        "items": { "type": "array" },
+        "total": { "type": "number" },
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "status": { "type": "string", "enum": ["received", "preparing", "out_for_delivery", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["items", "total", "customerName", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Collection of menu categories"
+    },
+    "/menuItems/{itemId}": {
+      "schema": "MenuItem",
+      "description": "Collection of menu items"
+    },
+    "/reservations/{reservationId}": {
+      "schema": "Reservation",
+      "description": "Customer reservations"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer online orders"
+    }
+  }
+}
