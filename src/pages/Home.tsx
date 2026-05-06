@@ -230,10 +230,10 @@ const CountUp = ({ end, duration = 2 }: { end: number, duration?: number }) => {
 
 const NewsTicker = () => {
   const items = [
+    { text: "La Lazzara", icon: "✦" },
+    { text: "Tradizione Napoletana per Palati Sopraffini", icon: "" },
     { text: "Dal Cuore di Napoli", icon: "✦" },
-    { text: "Ingredienti DOP · Ricette di Famiglia · Sapori Autentici", icon: "" },
-    { text: "Tradizione Napoletana", icon: "✦" },
-    { text: "La vera cucina partenopea per palati sopraffini!!", icon: "" }
+    { text: "Ingredienti DOP · Ricette di Famiglia", icon: "" }
   ];
 
   return (

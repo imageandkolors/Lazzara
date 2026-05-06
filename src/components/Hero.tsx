@@ -82,8 +82,8 @@ export const Hero = () => {
             <span className="text-brand-terracotta not-italic">Vera Pizza</span>
           </h1>
           
-          <p className="text-brand-cream/80 text-lg md:text-xl font-sans mb-10 max-w-lg leading-relaxed">
-            Scopri il cuore di Napoli con le nostre ricette centenarie e i migliori ingredienti biologici provenienti direttamente dalla Campania.
+          <p className="text-brand-cream/80 text-lg md:text-xl font-sans mb-10 max-w-lg leading-relaxed italic">
+            Tradizione Napoletana per Palati Sopraffini
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6">

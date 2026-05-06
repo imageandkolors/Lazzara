@@ -8,8 +8,8 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 sm:gap-8">
           <div className="col-span-1 md:col-span-2">
             <h2 className="text-3xl font-serif mb-6">La Lazzara</h2>
-            <p className="text-brand-cream/60 max-w-sm mb-8 leading-relaxed">
-              Portiamo i sapori autentici di Napoli sulla tua tavola dal 1985. Ogni pizza racconta una storia di tradizione, passione e dei migliori ingredienti che la Campania ha da offrire.
+            <p className="text-brand-cream/60 max-w-sm mb-8 leading-relaxed italic">
+              Tradizione Napoletana per Palati Sopraffini. Portiamo i sapori autentici di Napoli sulla tua tavola dal 1985.
             </p>
             <div className="flex space-x-4">
               {['Instagram', 'Facebook', 'TripAdvisor'].map((social) => (
@@ -38,7 +38,7 @@ export const Footer = () => {
         </div>
 
         <div className="mt-20 pt-8 border-t border-brand-cream/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-brand-cream/40">
-          <p>© 2024 La Lazzara Pizzeria. Tutti i diritti riservati.</p>
+          <p>© 2024 La Lazzara. Tutti i diritti riservati.</p>
           <div className="flex gap-8 font-bold">
             <a href="#" className="hover:text-brand-cream transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-brand-cream transition-colors">Termini di Servizio</a>

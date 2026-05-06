@@ -56,7 +56,7 @@ export const Navbar = () => {
             <Link to="/" className="flex items-center space-x-2">
               <UtensilsCrossed className={`w-8 h-8 transition-colors duration-500 ${isScrolled ? 'text-brand-terracotta' : 'text-brand-cream'}`} />
               <span className={`text-2xl font-serif font-bold tracking-tight transition-colors duration-500 ${isScrolled ? 'text-brand-ink' : 'text-brand-cream'}`}>
-                LA LAZZARA
+                La Lazzara
               </span>
             </Link>
 
