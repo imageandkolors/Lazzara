@@ -22,16 +22,16 @@ service cloud.firestore {
     // --- CATEGORIES ---
     function isValidCategory(data) {
       return data.keys().hasAll(['name', 'order', 'slug']) &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 50 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
              data.order is number &&
              data.slug is string && data.slug.matches('^[a-z0-9-]+$') &&
-             (!data.keys().hasAny(['description']) || (data.description is string && data.description.size() <= 500)) &&
-             data.keys().size() >= 3 && data.keys().size() <= 4;
+             (!data.keys().hasAny(['description']) || (data.description is string && data.description.size() <= 1000)) &&
+             data.keys().size() >= 3 && data.keys().size() <= 5;
     }
 
     match /categories/{categoryId} {
       allow read: if true;
-      allow create: if (isAdmin() || !isSignedIn()) && isValidCategory(incoming()); // Allow initial seed if no admin yet or if admin
+      allow create: if (isAdmin() || !isSignedIn()) && isValidId(categoryId); 
       allow update: if isAdmin() && isValidCategory(incoming());
       allow delete: if isAdmin();
     }
@@ -40,14 +40,16 @@ service cloud.firestore {
     function isValidMenuItem(data) {
       let core = data.keys().hasAll(['categoryId', 'name', 'price']) &&
                  data.categoryId is string &&
-                 data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+                 data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
                  data.price is number && data.price >= 0;
       
-      let optional = (!data.keys().hasAny(['description']) || (data.description is string && data.description.size() <= 1000)) &&
-                     (!data.keys().hasAny(['imageUrl']) || (data.imageUrl is string && data.imageUrl.size() <= 500)) &&
+      let optional = (!data.keys().hasAny(['description']) || (data.description is string && data.description.size() <= 2000)) &&
+                     (!data.keys().hasAny(['imageUrl']) || (data.imageUrl is string && data.imageUrl.size() <= 1000)) &&
                      (!data.keys().hasAny(['isVegetarian']) || data.isVegetarian is bool) &&
                      (!data.keys().hasAny(['isVegan']) || data.isVegan is bool) &&
                      (!data.keys().hasAny(['isSpicy']) || data.isSpicy is bool) &&
+                     (!data.keys().hasAny(['isGlutenFree']) || data.isGlutenFree is bool) &&
+                     (!data.keys().hasAny(['isAvailable']) || data.isAvailable is bool) &&
                      (!data.keys().hasAny(['popular']) || data.popular is bool);
       
       return core && optional;
@@ -56,29 +58,26 @@ service cloud.firestore {
     match /menuItems/{itemId} {
       allow read: if true;
       allow create: if (isAdmin() || !isSignedIn()) && isValidMenuItem(incoming());
-      allow update: if isAdmin() && isValidMenuItem(incoming());
+      allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
     // --- RESERVATIONS ---
     function isValidReservation(data) {
       return data.keys().hasAll(['customerName', 'email', 'date', 'time', 'guests', 'status']) &&
-             data.customerName is string && data.customerName.size() <= 100 &&
+             data.customerName is string && data.customerName.size() <= 150 &&
              data.email is string && data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
              data.date is string &&
              data.time is string &&
-             data.guests is number && data.guests > 0 && data.guests <= 20 &&
+             data.guests is number && data.guests > 0 && data.guests <= 50 &&
              data.status in ['pending', 'confirmed', 'cancelled'];
     }
 
     match /reservations/{reservationId} {
       allow create: if isValidReservation(incoming());
-      allow read: if isAdmin() || (isSignedIn() && existing().email == request.auth.token.email);
-      allow update: if isAdmin() || (
-        isSignedIn() && existing().email == request.auth.token.email &&
-        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'notes']) &&
-        incoming().status == 'cancelled'
-      );
+      allow read: if isAdmin() || (isSignedIn() && (resource == null || existing().email == request.auth.token.email));
+      allow list: if isAdmin();
+      allow update, delete: if isAdmin();
     }
 
     // --- ORDERS ---
@@ -87,14 +86,27 @@ service cloud.firestore {
              data.items is list && data.items.size() > 0 &&
              data.total is number && data.total >= 0 &&
              data.customerName is string &&
-             data.status in ['received', 'preparing', 'out_for_delivery', 'completed', 'cancelled'] &&
-             data.createdAt == request.time;
+             data.status in ['pending', 'preparing', 'delivering', 'delivered', 'cancelled'] &&
+             (!data.keys().hasAny(['userId']) || data.userId is string);
     }
 
     match /orders/{orderId} {
       allow create: if isValidOrder(incoming());
-      allow read: if isAdmin() || (isSignedIn() && existing().email == request.auth.token.email);
+      allow read: if isAdmin() || (isSignedIn() && (resource == null || existing().userId == request.auth.uid || existing().email == request.auth.token.email));
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- USERS (Profiles) ---
+    function isValidUser(data) {
+      return (!data.keys().hasAny(['address']) || (data.address is string && data.address.size() <= 500)) &&
+             (!data.keys().hasAny(['phone']) || (data.phone is string && data.phone.size() <= 50)) &&
+             (!data.keys().hasAny(['email']) || (data.email is string && data.email.size() <= 200));
+    }
+
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
     }
   }
 }
