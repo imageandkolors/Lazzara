@@ -11,7 +11,8 @@ export const AdminDashboard = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [reservations, setReservations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'orders' | 'reservations' | 'menu'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'reservations' | 'menu' | 'settings'>('orders');
+  const [systemSettings, setSystemSettings] = useState<any>({ isOpen: true, announcement: '' });
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [filter, setFilter] = useState<OrderStatus | 'all'>('all');
 
@@ -32,10 +33,16 @@ export const AdminDashboard = () => {
       setMenuItems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
 
+    const settingsDoc = doc(db, 'settings', 'restaurant');
+    const unsubSettings = onSnapshot(settingsDoc, (snap) => {
+      if (snap.exists()) setSystemSettings(snap.data());
+    });
+
     return () => {
       unsubOrders();
       unsubRes();
       unsubMenu();
+      unsubSettings();
     };
   }, []);
 
@@ -83,8 +90,13 @@ export const AdminDashboard = () => {
     <div className="min-h-screen bg-[#F8F9FA] flex">
       {/* Admin Sidebar */}
       <aside className="w-72 bg-brand-ink text-brand-cream hidden lg:flex flex-col p-8 fixed h-full z-20">
-        <div className="flex items-center gap-3 mb-16 px-4">
-          <ChefHat className="w-8 h-8 text-brand-terracotta" />
+        <div className="flex items-center gap-4 mb-16 px-4">
+          <img 
+            src="https://firebasestorage.googleapis.com/v0/b/ais-dev-zgzhh3srvjuqxkncze3ggc-434272613748.appspot.com/o/artifacts%2Fla_lazzara_logo.png?alt=media" 
+            alt="La Lazzara Logo" 
+            className="w-12 h-12 rounded-full border border-white/10"
+            referrerPolicy="no-referrer"
+          />
           <span className="font-serif italic text-2xl">La Lazzara</span>
         </div>
 
@@ -114,6 +126,13 @@ export const AdminDashboard = () => {
           >
             <Utensils className="w-5 h-5" />
             <span className="text-sm font-bold uppercase tracking-widest">Menu Live</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('settings')}
+            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all ${activeTab === 'settings' ? 'bg-brand-terracotta text-white shadow-lg shadow-brand-terracotta/20' : 'hover:bg-white/5'}`}
+          >
+            <Search className="w-5 h-5" />
+            <span className="text-sm font-bold uppercase tracking-widest">Stato App</span>
           </button>
         </nav>
 
@@ -304,7 +323,7 @@ export const AdminDashboard = () => {
                 </motion.div>
               ))}
             </div>
-          ) : (
+          ) : activeTab === 'menu' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {menuItems.map((item) => (
                 <div key={item.id} className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm flex flex-col">
@@ -327,6 +346,53 @@ export const AdminDashboard = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="max-w-2xl mx-auto space-y-12">
+              <div className="bg-white p-12 rounded-[48px] border border-gray-100 shadow-sm">
+                <h3 className="text-3xl font-serif text-brand-ink mb-8 italic">Stato Ristorante</h3>
+                
+                <div className="flex items-center justify-between p-8 bg-gray-50 rounded-3xl mb-12">
+                  <div>
+                    <p className="text-lg font-bold text-brand-ink mb-1">
+                      {systemSettings.isOpen ? 'Ristorante Aperto' : 'Ristorante Chiuso'}
+                    </p>
+                    <p className="text-xs text-brand-ink/40 uppercase tracking-widest font-bold">
+                      Determina se gli utenti possono ordinare online
+                    </p>
+                  </div>
+                  <button 
+                    onClick={async () => {
+                      await updateDoc(doc(db, 'settings', 'restaurant'), { isOpen: !systemSettings.isOpen });
+                      toast.success("Stato aggiornato");
+                    }}
+                    className={`relative w-20 h-10 rounded-full transition-colors ${systemSettings.isOpen ? 'bg-emerald-500' : 'bg-red-500'}`}
+                  >
+                    <div className={`absolute top-1 w-8 h-8 bg-white rounded-full transition-all ${systemSettings.isOpen ? 'left-11' : 'left-1'}`} />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-brand-ink/40 mb-3 px-2 block">Annuncio Live (Banner)</label>
+                    <textarea 
+                      value={systemSettings.announcement}
+                      onChange={(e) => setSystemSettings({ ...systemSettings, announcement: e.target.value })}
+                      placeholder="Esempio: Stasera Jazz dalle 20:30!"
+                      className="w-full bg-gray-50 border border-gray-100 rounded-3xl p-6 text-sm focus:ring-2 focus:ring-brand-terracotta outline-none transition-all h-32"
+                    />
+                  </div>
+                  <button 
+                    onClick={async () => {
+                      await updateDoc(doc(db, 'settings', 'restaurant'), { announcement: systemSettings.announcement });
+                      toast.success("Annuncio salvato");
+                    }}
+                    className="w-full py-5 bg-brand-ink text-white rounded-3xl font-bold text-xs uppercase tracking-widest hover:bg-brand-terracotta transition-all"
+                  >
+                    Salva Annuncio
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

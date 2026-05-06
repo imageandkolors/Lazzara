@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '../hooks/useCart';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trash2, ShoppingBag, ArrowRight, CreditCard, CheckCircle2, Minus, Plus, MessageCircle } from 'lucide-react';
-import { collection, addDoc, serverTimestamp, getDocs, query, limit, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, limit, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType, auth } from '../lib/firebase';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -90,8 +90,23 @@ export const CartView = () => {
 
   const discountedTotal = total - discountAmount;
 
+  const [isRestaurantOpen, setIsRestaurantOpen] = useState(true);
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, 'settings', 'restaurant'), (snap) => {
+      if (snap.exists()) {
+        setIsRestaurantOpen(snap.data().isOpen);
+      }
+    });
+    return () => unsub();
+  }, []);
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isRestaurantOpen) {
+      toast.error("Spiacenti, il ristorante è momentaneamente chiuso per nuovi ordini online.");
+      return;
+    }
     setLoading(true);
     const orderData = {
       userId: user?.uid || null,
@@ -389,10 +404,14 @@ export const CartView = () => {
                 
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full bg-brand-cream text-brand-ink py-6 rounded-full font-display uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-brand-terracotta hover:text-brand-cream transition-all flex items-center justify-center gap-3 disabled:opacity-50 mt-4 active:scale-95"
+                  disabled={loading || !isRestaurantOpen}
+                  className={`w-full py-6 rounded-full font-display uppercase tracking-[0.3em] text-[10px] font-bold transition-all flex items-center justify-center gap-3 mt-4 active:scale-95 ${
+                    isRestaurantOpen 
+                      ? 'bg-brand-cream text-brand-ink hover:bg-brand-terracotta hover:text-brand-cream' 
+                      : 'bg-red-500/20 text-red-500/50 cursor-not-allowed'
+                  }`}
                 >
-                  {loading ? 'Elaborazione...' : (
+                  {loading ? 'Elaborazione...' : !isRestaurantOpen ? 'Ristorante Chiuso' : (
                     <>
                       Conferma & Ordina <ArrowRight className="w-4 h-4" />
                     </>

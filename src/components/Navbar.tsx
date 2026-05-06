@@ -53,8 +53,15 @@ export const Navbar = () => {
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <UtensilsCrossed className={`w-8 h-8 transition-colors duration-500 ${isScrolled ? 'text-brand-terracotta' : 'text-brand-cream'}`} />
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="relative w-12 h-12 overflow-hidden bg-white/10 rounded-full border border-white/20 group-hover:scale-110 transition-transform duration-500">
+                <img 
+                  src="https://firebasestorage.googleapis.com/v0/b/ais-dev-zgzhh3srvjuqxkncze3ggc-434272613748.appspot.com/o/artifacts%2Fla_lazzara_logo.png?alt=media" 
+                  alt="La Lazzara Logo" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
               <span className={`text-2xl font-serif font-bold tracking-tight transition-colors duration-500 ${isScrolled ? 'text-brand-ink' : 'text-brand-cream'}`}>
                 La Lazzara
               </span>

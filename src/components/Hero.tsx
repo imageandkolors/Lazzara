@@ -68,6 +68,21 @@ export const Hero = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-2xl"
         >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 1 }}
+            className="mb-8 w-24 h-24 relative"
+          >
+            <div className="absolute inset-0 bg-brand-terracotta/20 rounded-full blur-xl animate-pulse" />
+            <img 
+              src="https://firebasestorage.googleapis.com/v0/b/ais-dev-zgzhh3srvjuqxkncze3ggc-434272613748.appspot.com/o/artifacts%2Fla_lazzara_logo.png?alt=media" 
+              alt="La Lazzara Logo" 
+              className="w-full h-full object-contain relative z-10"
+              referrerPolicy="no-referrer"
+            />
+          </motion.div>
+
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

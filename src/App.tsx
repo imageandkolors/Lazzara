@@ -27,6 +27,7 @@ import { Profile } from './pages/Profile';
 import { UIProvider } from './context/UIContext';
 import { ScrollToTop } from './components/ScrollToTop';
 import { AbandonedCartNudge } from './components/AbandonedCartNudge';
+import { AnnouncementBanner } from './components/AnnouncementBanner';
 
 function App() {
   const location = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <AbandonedCartNudge />
         <div className="min-h-screen flex flex-col selection:bg-brand-terracotta selection:text-brand-cream">
           <Toaster position="bottom-right" expand={false} richColors />
+          <AnnouncementBanner />
           <Navbar />
           <main className="flex-grow">
             <AnimatePresence mode="wait">

@@ -7,7 +7,15 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 sm:gap-8">
           <div className="col-span-1 md:col-span-2">
-            <h2 className="text-3xl font-serif mb-6">La Lazzara</h2>
+            <div className="flex items-center gap-4 mb-6">
+              <img 
+                src="https://firebasestorage.googleapis.com/v0/b/ais-dev-zgzhh3srvjuqxkncze3ggc-434272613748.appspot.com/o/artifacts%2Fla_lazzara_logo.png?alt=media" 
+                alt="La Lazzara Logo" 
+                className="w-16 h-16 rounded-full border border-brand-cream/10"
+                referrerPolicy="no-referrer"
+              />
+              <h2 className="text-3xl font-serif">La Lazzara</h2>
+            </div>
             <p className="text-brand-cream/60 max-w-sm mb-8 leading-relaxed italic">
               Tradizione Napoletana per Palati Sopraffini. Portiamo i sapori autentici di Napoli sulla tua tavola dal 1985.
             </p>

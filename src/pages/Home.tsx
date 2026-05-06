@@ -432,6 +432,56 @@ export const Home = () => {
       {/* Testimonials Parallax */}
       <TestimonialsSlider />
 
+      {/* Events Section */}
+      <section className="py-32 bg-brand-cream/20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div>
+              <span className="text-brand-terracotta font-serif italic text-xl block mb-4 underline underline-offset-8">Esperienze</span>
+              <h2 className="text-5xl md:text-7xl font-serif text-brand-ink mb-8">Non solo <br /><span className="italic">Pizza</span></h2>
+              <p className="text-brand-ink/60 text-lg leading-relaxed mb-12">
+                Unisciti a noi per le nostre serate speciali. Musica dal vivo, degustazioni di vini campani e laboratori di pizza per bambini. Ogni settimana un'emozione diversa.
+              </p>
+              
+              <div className="space-y-6">
+                {[
+                  { date: "Ogni Giovedì", title: "Live Jazz Night", time: "20:30 - 23:00" },
+                  { date: "24 Luglio", title: "Degustazione Vini Vesuviani", time: "19:00 - 21:00" },
+                  { date: "Settimanale", title: "Laboratorio 'Piccoli Pizzaioli'", time: "Domenica Mattina" }
+                ].map((event, idx) => (
+                  <div key={idx} className="flex items-center gap-8 p-6 bg-white rounded-3xl border border-brand-ink/5 hover:border-brand-terracotta/20 transition-all shadow-sm group">
+                    <div className="text-center min-w-[100px]">
+                      <span className="text-brand-terracotta font-serif italic text-lg block">{event.date}</span>
+                    </div>
+                    <div className="h-10 w-px bg-brand-ink/10" />
+                    <div>
+                      <h4 className="font-serif italic text-xl text-brand-ink">{event.title}</h4>
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-brand-ink/30 italic">{event.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl skew-y-1">
+                <img 
+                  src="https://images.unsplash.com/photo-1514525253361-bee8d48700df?q=80&w=1964&auto=format&fit=crop" 
+                  alt="Jazz Event" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                />
+              </div>
+              <div className="absolute -bottom-10 -left-10 bg-brand-terracotta p-10 rounded-[40px] shadow-2xl text-brand-cream max-w-[250px] -rotate-3">
+                <p className="font-serif italic text-2xl mb-2">"La musica è il condimento della vita."</p>
+                <div className="w-10 h-1 bg-white/30 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Reservation CTA */}
       <section className="py-32 bg-brand-terracotta relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
